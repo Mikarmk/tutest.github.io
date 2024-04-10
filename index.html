@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Курсы</title>
 <style>
-
-  /* Стили для модального окна */
+  
 .modal {
   display: none; 
   position: fixed; 
@@ -44,10 +43,10 @@
   cursor: pointer;
 }
 
-/* Обновленные стили для карточек курсов, удаляем описание, добавляем аватарку автора */
+
 .course-card {
   position: relative;
-  /* другие стили... */
+
 }
 
 .course-author {
@@ -60,7 +59,6 @@
   border: 2px solid white;
 }
 
-/* Другие стили остаются прежними */
 
 .user-profile {
   position: relative;
@@ -191,7 +189,6 @@ nav a {
       <a href="#">Настройки</a>
       <a href="#">Статистика</a>
       <a href="#">Выйти</a>
-      <!-- Добавьте сюда другие пункты меню -->
     </div>
   </div>
   
@@ -208,9 +205,7 @@ nav a {
   </div>
 </div>
 
-<!-- Обновляем карточки курсов без описания и с аватаркой автора -->
-<script>
-// Обновленный JavaScript код должен теперь открывать модальное окно
+  <script>
 function createCourseCard(course) {
   const card = document.createElement('div');
   card.classList.add('course-card');
@@ -246,7 +241,6 @@ window.onclick = function(event) {
 </script>
 
 <main id="course-list">
-  <!-- Карточки курсов будут тут -->
 </main>
 
 <script>
