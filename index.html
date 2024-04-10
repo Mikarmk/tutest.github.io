@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Курсы</title>
+<style>
+
+  /* Стили для модального окна */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  border-radius: 5px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Обновленные стили для карточек курсов, удаляем описание, добавляем аватарку автора */
+.course-card {
+  position: relative;
+  /* другие стили... */
+}
+
+.course-author {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* Другие стили остаются прежними */
+
+.user-profile {
+  position: relative;
+  display: inline-block;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; 
+  cursor: pointer;
+}
+
+.profile-menu {
+  border-radius: 10px; 
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.profile-menu a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.profile-menu a:hover {
+  background-color: #f1f1f1;
+  border-radius: 10px; 
+}
+
+
+.user-avatar:hover + .profile-menu { 
+  display: block;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Onest', Arial, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #408FFF;
+  padding: 10px 20px;
+  color: white;
+}
+#logo {
+  width: 100px; 
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+}
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#search {
+  padding: 5px 5px 5px 35px; 
+  border-radius: 20px;
+  border: 1px solid #408FFF;
+  outline: none; 
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.search-box::before {
+  content: url('search.svg'); 
+  position: absolute;
+  left: 10px;
+  pointer-events: none; 
+}
+
+#course-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+.course-card {
+  border: 1px solid #408FFF;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.course-card img {
+  width: 100%;
+  border-radius: 10px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.course-card:hover {
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.svg" alt="Логотип" id="logo">
+  <nav id="navbar">
+    <a href="#">Домой</a>
+    <a href="#">Курсы</a>
+    <a href="#">Мое</a>
+  </nav>
+  <div class="search-box">
+    <input type="search" id="search" placeholder="Найти...">
+  </div>
+  <div class="user-profile">
+    <img src="avatar.png" alt="Профиль" class="user-avatar">
+    <div class="profile-menu">
+      <a href="#">Профиль</a>
+      <a href="#">Настройки</a>
+      <a href="#">Статистика</a>
+      <a href="#">Выйти</a>
+      <!-- Добавьте сюда другие пункты меню -->
+    </div>
+  </div>
+  
+</header>
+
+<!-- Добавляем модальное окно в HTML -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img id="modalImg" src="" alt="Курс изображение" style="width: 100%;" />
+    <p id="modalDescription"></p>
+    <p id="modalAuthor"></p>
+    <button onclick="registerCourse()">Записаться</button>
+  </div>
+</div>
+
+<!-- Обновляем карточки курсов без описания и с аватаркой автора -->
+<script>
+// Обновленный JavaScript код должен теперь открывать модальное окно
+function createCourseCard(course) {
+  const card = document.createElement('div');
+  card.classList.add('course-card');
+  card.innerHTML = `
+    <img src="${course.imageUrl}" alt="${course.title}" class="course-image">
+    <img src="author-avatar.png" alt="Author" class="course-author">
+    <h3>${course.title}</h3>
+  `;
+  card.onclick = function() {
+    document.getElementById('myModal').style.display = "block";
+    document.getElementById('modalImg').src = course.imageUrl;
+    document.getElementById('modalDescription').textContent = course.description;
+    document.getElementById('modalAuthor').textContent = "Автор: " + course.author; // добавить поля author в объекты courses
+  };
+  return card;
+}
+
+function registerCourse() {
+  alert('Вы записаны на курс!');
+}
+
+// Код для закрытия модального окна
+var modal = document.getElementById('myModal');
+var span = document.getElementsByClassName("close")[0];
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+<main id="course-list">
+  <!-- Карточки курсов будут тут -->
+</main>
+
+<script>
+const courses = [
+  { id: 1, title: 'Курс JavaScript', description: 'Изучите JavaScript с нуля.', imageUrl: 'media/JS.png' },
+  { id: 2, title: 'Курс C#', description: 'Изучите C#', imageUrl: 'media/gamedev.png' },
+  { id: 3, title: 'Курс HTML', description: 'Изучите HTML.', imageUrl: 'media/DB.png' },
+  { id: 4, title: 'Курс Python', description: 'Изучите Python.', imageUrl: 'media/Py.png' },
+  { id: 5, title: 'Курс Java', description: 'Изучите Java.', imageUrl: 'media/Py.png' },
+  { id: 6, title: 'Курс C++', description: 'Изучите C++.', imageUrl: 'media/Py.png' }
+
+];
+
+function createCourseCard(course) {
+  const card = document.createElement('div');
+  card.classList.add('course-card');
+  card.innerHTML = `
+    <img src="${course.imageUrl}" alt="${course.title}">
+    <h3>${course.title}</h3>
+    <p>${course.description}</p>
+  `;
+  card.onclick = function() {
+    alert('Записаться на курс: ' + course.title);
+  };
+  return card;
+}
+
+const courseList = document.getElementById('course-list');
+courses.forEach(course => {
+  courseList.appendChild(createCourseCard(course));
+});
+
+document.querySelector('.user-avatar').addEventListener('click', function() {
+  document.querySelector('.profile-menu').style.display = 'block';
+});
+
+window.onclick = function(event) {
+  if (!event.target.matches('.user-avatar')) {
+    var dropdowns = document.getElementsByClassName("profile-menu");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.style.display === 'block') {
+        openDropdown.style.display = 'none';
+      }
+    }
+  }
+};
+</script>
+
+</body>
+</html>
